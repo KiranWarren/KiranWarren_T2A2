@@ -114,6 +114,16 @@ There are a total of 10 relationships between tables in the database. These have
 
 ### 3.1 API Endpoints (R5)
 
+The application shall have the following endpoints:
+
+Route: ("/")
+GET - Homepage for the application.
+
+Route: ("/locations")
+GET -
+PUT -
+DELETE -
+
 ### 3.2 Third-Party Services (R7)
 
 ## 4 Project Management
