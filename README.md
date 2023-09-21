@@ -116,13 +116,78 @@ There are a total of 10 relationships between tables in the database. These have
 
 The application shall have the following endpoints:
 
-Route: ("/")
-GET - Homepage for the application.
+### 3.1.1 Homepage
 
-Route: ("/locations")
-GET -
-PUT -
-DELETE -
+> GET /
+
+Homepage for the application. Displays all available endpoints.
+
+Responses:
+
+- 200 OK
+
+### 3.1.2 Location Endpoints
+
+### Get all locations
+
+> GET /locations
+
+Returns all business locations stored in the database.
+
+Responses:
+
+- 200 OK
+
+### Get location by location ID
+
+> GET /location/{id}
+
+Returns the location that matches the given _id_.
+
+Responses:
+
+- 200 OK,
+- 404 Not Found - a location with that _id_ does not exist in the locations data table.
+
+Parameters:
+
+- id: Integer, Required
+
+### Create a location
+
+> PUT /locations
+
+Creates a location in the locations data table using the HTTP payload.
+
+Responses:
+
+- 201 Created
+- 400 Bad Request - the put operation was not completed, please check to see your payload matches the parameter requirements.
+
+Parameters:
+
+- name: String(50), Required
+- country_id: Integer, Required
+- admin_phone_number: String(25), Required
+- location_type_id: Integer, Required
+
+### Modify a location by location ID
+
+> PUT /location/{id}
+
+Modifies the location in the locations data table that has a matching _id_.
+
+Responses:
+
+- 200 OK
+- 400 Bad Request - the put operation was not completed. please check to see your payload matches the parameter requirements.
+
+Parameters:
+
+- name: String(50), Optional
+- country_id: Integer, Optional
+- admin_phone_number: String(25), Optional
+- location_type_id: Integer, Optional
 
 ### 3.2 Third-Party Services (R7)
 
