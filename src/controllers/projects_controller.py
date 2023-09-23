@@ -39,9 +39,9 @@ def update_project_by_id(project_id: int):
 
         # Map request json to project
         project.title = project_json["title"]
-        project.published_date = project_json["published_date"]
-        project.description = project_json["description"]
-        project.certification_number = project_json["certification_number"]
+        project.published_date = project_json.get("published_date")
+        project.description = project_json.get("description")
+        project.certification_number = project_json.get("certification_number")
 
         # Commit changes
         db.session.commit()

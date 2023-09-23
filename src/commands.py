@@ -124,8 +124,13 @@ def seed_db():
     )
 
     proj3 = Project(
-        title = "RWG Stud Pressing Tool"
-        description = "Suits 785, 789, 793 Std RWGs."
+        title = "RWG Stud Pressing Tool",
+        description = "Suits 785, 789, 793 Std RWGs.",
         certification_number = "S0012344"
+    )
+
+    # Seed Users
+    db.session.add_all([proj1, proj2, proj3])
+    db.session.commit()
 
     print("Tables have been seeded.")

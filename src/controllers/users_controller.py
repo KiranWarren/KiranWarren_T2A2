@@ -40,9 +40,9 @@ def update_user_by_id(user_id: int):
         # Map request json to user
         user.username = user_json["username"]
         user.email_address = user_json["email_address"]
-        user.position = user_json["position"]
         user.is_admin = user_json["is_admin"]
         user.location_id = user_json["location_id"]
+        user.position = user_json.get("position")
 
         # Commit changes
         db.session.commit()

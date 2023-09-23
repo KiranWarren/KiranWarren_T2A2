@@ -3,6 +3,7 @@ from main import ma
 class ProjectSchema(ma.Schema):
     class Meta:
         fields = (
+            "id",
             "title", 
             "published_date",
             "description",
