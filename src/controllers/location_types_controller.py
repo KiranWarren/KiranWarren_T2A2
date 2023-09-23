@@ -22,7 +22,7 @@ def create_location_type():
     return jsonify(location_type_schema.dump(new_location_type))
 
 
-# UPDATE a location_type by id
+# UPDATE a location type by id
 # /location-types/<id>
 @location_types.route("/<int:location_type_id>", methods=["PUT"])
 def update_location_type_by_id(location_type_id: int):
@@ -57,7 +57,7 @@ def get_location_types_list():
     return jsonify(response)
 
 
-# DELETE a location_type by id
+# DELETE a location type by id
 # /location-types/<id>
 @location_types.route("/<int:location_type_id>", methods=["DELETE"])
 def delete_location_type_by_id(location_type_id: int):

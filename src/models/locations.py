@@ -25,5 +25,10 @@ class Location(db.Model):
         "LocationType",
         back_populates="locations"
     )
+    users = db.relationship(
+        "User",
+        back_populates="location",
+        cascade="all, delete"
+    )
 
     
