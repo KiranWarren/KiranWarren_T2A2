@@ -30,20 +30,32 @@ def seed_db():
         country = "Hammerfell"
     )
 
-    loc_type1 = Country(
+    loc_type1 = LocationType(
         location_type = "Workshop"
     )
 
-    loc_type2 = Country(
+    loc_type2 = LocationType(
         location_type = "Office"
     )
 
-    loc_type3 = Country(
+    loc_type3 = LocationType(
         location_type = "Mine Site"
     )
 
+    curr1 = Currency(
+        currency_abbr = "AUD"
+    )
+
+    curr2 = Currency(
+        currency_abbr = "USD"
+    )
+        
+    curr3 = Currency(
+        currency_abbr = "IDR"
+    )
+
     # Seed supporting entities
-    db.session.add_all([ctry1, ctry2, ctry3, loc_type1, loc_type2, loc_type3])
+    db.session.add_all([ctry1, ctry2, ctry3, loc_type1, loc_type2, loc_type3, curr1, curr2, curr3])
     db.session.commit()
 
     loc1 = Location(

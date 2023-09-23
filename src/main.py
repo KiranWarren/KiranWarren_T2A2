@@ -33,10 +33,10 @@ def init_app():
     app.register_blueprint(db_commands)
 
 
-    # Create Routes
+    # Connect Routes & Controllers
     from controllers import register_controllers
     for controller in register_controllers:
         app.register_blueprint(controller)
-
+        
 
     return app
