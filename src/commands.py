@@ -60,17 +60,23 @@ def seed_db():
 
     loc1 = Location(
         name = "Balmora",
-        admin_phone_number = "+614 555 555 55"
+        admin_phone_number = "+614 555 555 55",
+        country_id = 1,
+        location_type_id = 1
     )
 
     loc2 = Location(
         name = "Aldruhn",
-        admin_phone_number = "+614 666 666 66"
+        admin_phone_number = "+614 666 666 66",
+        country_id = 1,
+        location_type_id = 2
     )
 
     loc3 = Location(
         name = "Gnisis",
-        admin_phone_number = "+614 777 777 77"
+        admin_phone_number = "+614 777 777 77",
+        country_id = 2,
+        location_type_id = 3
     )
 
     # Seed Locations

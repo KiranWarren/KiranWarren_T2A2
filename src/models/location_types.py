@@ -9,6 +9,11 @@ class LocationType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     # Columns
-    location_type = db.Column(db.String)
+    location_type = db.Column(db.String(25), unique=True, nullable=False)
 
-    
+    # Relationships
+    locations = db.relationship(
+        "Location",
+        back_populates="location_type",
+        cascade="all, delete"
+    )
