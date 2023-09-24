@@ -23,3 +23,8 @@ class User(db.Model):
         "Location",
         back_populates="users"
     )
+    comments = db.relationship(
+        "Comment",
+        back_populates="user",
+        cascade="all, delete"
+    )

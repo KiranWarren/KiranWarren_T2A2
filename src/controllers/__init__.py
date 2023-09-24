@@ -5,6 +5,7 @@ from controllers.currencies_controller import currencies
 from controllers.users_controller import users
 from controllers.projects_controller import projects
 from controllers.drawings_controller import drawings
+from controllers.comments_controller import comments
 
 register_controllers = (
     locations,
@@ -13,5 +14,6 @@ register_controllers = (
     currencies,
     users,
     projects,
-    drawings
+    drawings,
+    comments
     )

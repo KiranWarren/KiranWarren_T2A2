@@ -2,7 +2,7 @@ from main import db
 from flask import Blueprint
 import datetime
 
-from models import Country, Currency, LocationType, Location, User, Project, Drawing
+from models import Country, Currency, LocationType, Location, User, Project, Drawing, Comment
 
 db_commands = Blueprint("db", __name__)
 
@@ -192,6 +192,41 @@ def seed_db():
 
     # Seed Drawings
     db.session.add_all([drw1, drw2, drw3, drw4, drw5, drw6, drw7, drw8, drw9])
+    db.session.commit()
+
+    cmnt1 = Comment(
+        project_id = 1,
+        user_id = 2,
+        comment = "Does this design suit the 789D models?",
+        when_created = datetime.datetime.now()
+    )
+    cmnt2 = Comment(
+        project_id = 1,
+        user_id = 1,
+        comment = "Yes, this design should suit the 789D's.",
+        when_created = datetime.datetime.now()
+    )
+    cmnt3 = Comment(
+        project_id = 1,
+        user_id = 2,
+        comment = "Thanks for clearing that up.",
+        when_created = datetime.datetime.now()
+    )
+    cmnt4 = Comment(
+        project_id = 2,
+        user_id = 3,
+        comment = "Can this transport frame be transported on a standard 12m trailer?",
+        when_created = datetime.datetime.now()
+    )
+    cmnt5 = Comment(
+        project_id = 2,
+        user_id = 1,
+        comment = "No, an extended trailer is required to transport this component/frame.",
+        when_created = datetime.datetime.now()
+    )
+
+    # Seed Comments
+    db.session.add_all([cmnt1, cmnt2, cmnt3, cmnt4, cmnt5])
     db.session.commit()
 
     print("Tables have been seeded.")

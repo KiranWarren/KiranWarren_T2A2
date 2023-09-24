@@ -20,3 +20,8 @@ class Project(db.Model):
         back_populates="project",
         cascade="all, delete"
     )
+    comments = db.relationship(
+        "Comment",
+        back_populates="project",
+        cascade="all, delete"
+    )
