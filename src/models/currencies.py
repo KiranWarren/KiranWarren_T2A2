@@ -11,4 +11,10 @@ class Currency(db.Model):
     # Columns
     currency_abbr = db.Column(db.String(3), unique=True, nullable=False)
 
+    # Relationships
+    manufactures = db.relationship(
+        "Manufacture",
+        back_populates="currency",
+        cascade="all, delete"
+    )
     

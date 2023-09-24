@@ -6,4 +6,5 @@ from models.users import User
 from models.projects import Project
 from models.drawings import Drawing
 from models.comments import Comment
+from models.manufactures import Manufacture
 

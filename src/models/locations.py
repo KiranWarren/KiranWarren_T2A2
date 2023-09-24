@@ -30,5 +30,10 @@ class Location(db.Model):
         back_populates="location",
         cascade="all, delete"
     )
+    manufactures = db.relationship(
+        "Manufacture",
+        back_populates="location",
+        cascade="all, delete"
+    )
 
     

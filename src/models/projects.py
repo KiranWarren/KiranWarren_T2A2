@@ -25,3 +25,8 @@ class Project(db.Model):
         back_populates="project",
         cascade="all, delete"
     )
+    manufactures = db.relationship(
+        "Manufacture",
+        back_populates="project",
+        cascade="all, delete"
+    )

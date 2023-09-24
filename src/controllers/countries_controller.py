@@ -57,6 +57,23 @@ def get_countries_list():
     return jsonify(response)
 
 
+# GET a country by id
+# /countries/<id>
+@countries.route("/<int:country_id>", methods=["GET"])
+def get_country_by_id(country_id: int):
+    '''
+    
+    '''
+    query = db.select(Country).filter_by(id=country_id)
+    country = db.session.scalar(query)
+    response = country_schema.dump(country)
+
+    if not response:
+        return abort(404, description=f"A country with id=`{country_id}` does not exist in the database.")
+
+    return jsonify(response)
+
+
 # DELETE a country by id
 # /countries/<id>
 @countries.route("/<int:country_id>", methods=["DELETE"])

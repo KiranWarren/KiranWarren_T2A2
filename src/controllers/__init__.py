@@ -6,6 +6,7 @@ from controllers.users_controller import users
 from controllers.projects_controller import projects
 from controllers.drawings_controller import drawings
 from controllers.comments_controller import comments
+from controllers.manufactures_controller import manufactures
 
 register_controllers = (
     locations,
@@ -15,5 +16,6 @@ register_controllers = (
     users,
     projects,
     drawings,
-    comments
+    comments,
+    manufactures
     )

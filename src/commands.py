@@ -2,7 +2,7 @@ from main import db
 from flask import Blueprint
 import datetime
 
-from models import Country, Currency, LocationType, Location, User, Project, Drawing, Comment
+from models import Country, Currency, LocationType, Location, User, Project, Drawing, Comment, Manufacture
 
 db_commands = Blueprint("db", __name__)
 
@@ -227,6 +227,32 @@ def seed_db():
 
     # Seed Comments
     db.session.add_all([cmnt1, cmnt2, cmnt3, cmnt4, cmnt5])
+    db.session.commit()
+
+    manu1 = Manufacture(
+        location_id = 1,
+        project_id = 1,
+        price_estimate = 22000,
+        currency_id = 1,
+        id = "1-1"
+    )
+    manu2 = Manufacture(
+        location_id = 1,
+        project_id = 2,
+        price_estimate = 14000,
+        currency_id = 1,
+        id = "1-2"
+    )
+    manu3 = Manufacture(
+        location_id = 1,
+        project_id = 3,
+        price_estimate = 2324.50,
+        currency_id = 1,
+        id = "1-3"
+    )
+
+    # Seed Manufactures
+    db.session.add_all([manu1, manu2, manu3])
     db.session.commit()
 
     print("Tables have been seeded.")

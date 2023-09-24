@@ -57,6 +57,23 @@ def get_location_types_list():
     return jsonify(response)
 
 
+# GET a location type by id
+# /location-types/<id>
+@location_types.route("/<int:location_type_id>", methods=["GET"])
+def get_location_type_by_id(location_type_id: int):
+    '''
+    
+    '''
+    query = db.select(LocationType).filter_by(id=location_type_id)
+    location_type = db.session.scalar(query)
+    response = location_type_schema.dump(location_type)
+
+    if not response:
+        return abort(404, description=f"A location_type with id=`{location_type_id}` does not exist in the database.")
+
+    return jsonify(response)
+
+
 # DELETE a location type by id
 # /location-types/<id>
 @location_types.route("/<int:location_type_id>", methods=["DELETE"])
