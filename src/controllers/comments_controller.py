@@ -1,4 +1,7 @@
 from flask import Blueprint, jsonify, abort, request
+from marshmallow.exceptions import ValidationError
+from werkzeug.exceptions import BadRequest
+from sqlalchemy.exc import IntegrityError, DataError
 import datetime
 
 from main import db
@@ -6,6 +9,27 @@ from models.comments import Comment
 from schemas.comment_schema import comment_schema, comments_schema
 
 comments = Blueprint('comment', __name__, url_prefix="/comments")
+
+# Error handlers
+@comments.errorhandler(BadRequest)
+def bad_request_error_handler(e):
+    return jsonify({"error": e.description}), 400
+
+@comments.errorhandler(ValidationError)
+def validation_error_handler(e):
+    return jsonify(e.messages), 400
+
+@comments.errorhandler(KeyError)
+def key_error_error_handler(e):
+    return jsonify({"error": f"The field `{e}` is required."}), 400
+
+@comments.errorhandler(IntegrityError)
+def integrity_error_handler(e):
+    return jsonify({"error": f"Integrity Error - `{e}`"}), 400
+
+@comments.errorhandler(DataError)
+def data_error_handler(e):
+    return jsonify({"error": f"Data Error - `{e}`"}), 400
 
 
 # CREATE a comment
@@ -50,7 +74,7 @@ def update_comment_by_id(comment_id: int):
         db.session.commit()
         return jsonify(comment_schema.dump(comment))
 
-    return abort(404, description=f"A comment with `id`={comment_id} does not exist in the database. No updates have been made.")
+    return jsonify({"error": f"A comment with `id`={comment_id} does not exist in the database. No updates have been made."}), 404
 
 
 # GET all comments
@@ -79,7 +103,7 @@ def get_comment_by_id(comment_id: int):
     response = comment_schema.dump(comment)
 
     if not response:
-        return abort(404, description=f"A comment with id=`{comment_id}` does not exist in the database.")
+        return jsonify({"error": f"A comment with id=`{comment_id}` does not exist in the database."}), 404
 
     return jsonify(response)
 
@@ -95,7 +119,7 @@ def delete_comment_by_id(comment_id: int):
     response = comment_schema.dump(comment)
 
     if not response:
-        return abort(404, description=f"A comment with `id`={comment_id} does not exist in the database. No deletions have been made.")
+        return jsonify({"error": f"A comment with `id`={comment_id} does not exist in the database. No deletions have been made."}), 404
 
     db.session.delete(comment)
     db.session.commit()

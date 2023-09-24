@@ -1,10 +1,35 @@
 from flask import Blueprint, jsonify, abort, request
+from marshmallow.exceptions import ValidationError
+from werkzeug.exceptions import BadRequest
+from sqlalchemy.exc import IntegrityError, DataError
 
 from main import db
 from models.users import User
 from schemas.user_schema import user_schema, users_schema
 
 users = Blueprint('user', __name__, url_prefix="/users")
+
+
+# Error handlers
+@users.errorhandler(BadRequest)
+def bad_request_error_handler(e):
+    return jsonify({"error": e.description}), 400
+
+@users.errorhandler(ValidationError)
+def validation_error_handler(e):
+    return jsonify(e.messages), 400
+
+@users.errorhandler(KeyError)
+def key_error_error_handler(e):
+    return jsonify({"error": f"The field `{e}` is required."}), 400
+
+@users.errorhandler(IntegrityError)
+def integrity_error_handler(e):
+    return jsonify({"error": f"Integrity Error - `{e}`"}), 400
+
+@users.errorhandler(DataError)
+def data_error_handler(e):
+    return jsonify({"error": f"Data Error - `{e}`"}), 400
 
 
 # CREATE a user
@@ -43,13 +68,13 @@ def update_user_by_id(user_id: int):
         user.is_admin = user_json["is_admin"]
         user.location_id = user_json["location_id"]
         user.position = user_json.get("position")
+        user.password = user_json["password"]
 
         # Commit changes
         db.session.commit()
         return jsonify(user_schema.dump(user))
 
-    return abort(404, description=f"A user with `id`={user_id} does not exist in the database. No updates have been made.")
-
+    return jsonify({"error": f"A user with `id`={user_id} does not exist in the database. No updates have been made."}), 404
 
 # GET all users
 # /users/

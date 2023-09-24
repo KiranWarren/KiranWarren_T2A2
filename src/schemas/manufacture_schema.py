@@ -1,9 +1,18 @@
+from marshmallow import fields
+
 from main import ma
 from schemas.project_schema import ProjectSchema
 from schemas.location_schema import LocationSchema
 from schemas.currency_schema import CurrencySchema
 
 class ManufactureSchema(ma.Schema):
+
+    # Validation
+    location_id = fields.Integer(required=True)
+    project_id = fields.Integer(required=True)
+    price_estimate = fields.Float(required=True)
+    currency_id = fields.Integer(required=True)
+
     class Meta:
         fields = (
             "id",

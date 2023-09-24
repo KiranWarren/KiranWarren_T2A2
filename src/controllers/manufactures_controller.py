@@ -1,10 +1,34 @@
 from flask import Blueprint, jsonify, abort, request
+from marshmallow.exceptions import ValidationError
+from werkzeug.exceptions import BadRequest
+from sqlalchemy.exc import IntegrityError, DataError
 
 from main import db
 from models.manufactures import Manufacture
 from schemas.manufacture_schema import manufacture_schema, manufactures_schema
 
 manufactures = Blueprint('manufacture', __name__, url_prefix="/manufactures")
+
+# Error handlers
+@manufactures.errorhandler(BadRequest)
+def bad_request_error_handler(e):
+    return jsonify({"error": e.description}), 400
+
+@manufactures.errorhandler(ValidationError)
+def validation_error_handler(e):
+    return jsonify(e.messages), 400
+
+@manufactures.errorhandler(KeyError)
+def key_error_error_handler(e):
+    return jsonify({"error": f"The field `{e}` is required."}), 400
+
+@manufactures.errorhandler(IntegrityError)
+def integrity_error_handler(e):
+    return jsonify({"error": f"Integrity Error - `{e}`"}), 400
+
+@manufactures.errorhandler(DataError)
+def data_error_handler(e):
+    return jsonify({"error": f"Data Error - `{e}`"}), 400
 
 
 # CREATE a manufacture
@@ -49,7 +73,7 @@ def update_manufacture_by_id(manufacture_id: str):
         db.session.commit()
         return jsonify(manufacture_schema.dump(manufacture))
 
-    return abort(404, description=f"A manufacture with `id`={manufacture_id} does not exist in the database. No updates have been made.")
+    return jsonify({"error": f"A manufacture with `id`={manufacture_id} does not exist in the database. No updates have been made."}), 404
 
 
 # GET all manufactures
@@ -78,7 +102,7 @@ def get_manufacture_by_id(manufacture_id: str):
     response = manufacture_schema.dump(manufacture)
 
     if not response:
-        return abort(404, description=f"A manufacture with id=`{manufacture_id}` does not exist in the database.")
+        return jsonify({"error": f"A manufacture with id=`{manufacture_id}` does not exist in the database."}), 404
 
     return jsonify(response)
 
@@ -94,7 +118,7 @@ def delete_manufacture_by_id(manufacture_id: str):
     response = manufacture_schema.dump(manufacture)
 
     if not response:
-        return abort(404, description=f"A manufacture with `id`={manufacture_id} does not exist in the database. No deletions have been made.")
+        return jsonify({"error": f"A manufacture with `id`={manufacture_id} does not exist in the database. No deletions have been made."}), 404
 
     db.session.delete(manufacture)
     db.session.commit()

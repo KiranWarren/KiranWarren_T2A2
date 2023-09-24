@@ -1,10 +1,35 @@
 from flask import Blueprint, jsonify, request, abort
+from marshmallow.exceptions import ValidationError
+from werkzeug.exceptions import BadRequest
+from sqlalchemy.exc import IntegrityError, DataError
 
 from main import db
 from models.currencies import Currency
 from schemas.currency_schema import currency_schema, currencies_schema
 
 currencies = Blueprint('currency', __name__, url_prefix="/currencies")
+
+# Error handlers
+@currencies.errorhandler(BadRequest)
+def bad_request_error_handler(e):
+    return jsonify({"error": e.description}), 400
+
+@currencies.errorhandler(ValidationError)
+def validation_error_handler(e):
+    return jsonify(e.messages), 400
+
+@currencies.errorhandler(KeyError)
+def key_error_error_handler(e):
+    return jsonify({"error": f"The field `{e}` is required."}), 400
+
+@currencies.errorhandler(IntegrityError)
+def integrity_error_handler(e):
+    return jsonify({"error": f"Integrity Error - `{e}`"}), 400
+
+@currencies.errorhandler(DataError)
+def data_error_handler(e):
+    return jsonify({"error": f"Data Error - `{e}`"}), 400
+
 
 # CREATE a currency
 # /currencies/
@@ -43,7 +68,7 @@ def update_currency_by_id(currency_id: int):
         db.session.commit()
         return jsonify(currency_schema.dump(currency))
 
-    return abort(404, description=f"A currency with `id`={currency_id} does not exist in the database. No updates have been made.")
+    return jsonify({"error": f"A currency with `id`={currency_id} does not exist in the database. No updates have been made."}), 404
 
 
 # GET all currencies
@@ -69,7 +94,7 @@ def get_currency_by_id(currency_id: int):
     response = currency_schema.dump(currency)
 
     if not response:
-        return abort(404, description=f"A currency with id=`{currency_id}` does not exist in the database.")
+        return jsonify({"error": f"A currency with id=`{currency_id}` does not exist in the database."}), 404
 
     return jsonify(response)
 
@@ -85,7 +110,7 @@ def delete_currency_by_id(currency_id: int):
     response = currency_schema.dump(currency)
 
     if not response:
-        return abort(404, description=f"A currency with `id`={currency_id} does not exist in the database. No deletions have been made.")
+        return jsonify({"error": f"A currency with `id`={currency_id} does not exist in the database. No deletions have been made."}), 404
 
     db.session.delete(currency)
     db.session.commit()

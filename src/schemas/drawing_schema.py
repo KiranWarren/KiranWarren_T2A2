@@ -1,7 +1,17 @@
+from marshmallow.validate import Length
+from marshmallow import fields
+
 from main import ma
 from schemas.project_schema import ProjectSchema
 
 class DrawingSchema(ma.Schema):
+
+    # Validation
+    drawing_number = fields.String(required=True, validate=Length(min=3, max=10))
+    part_description = fields.String(required=False)
+    version = fields.Integer(required=False)
+    project_id = fields.Integer(required=True)
+
     class Meta:
         fields = (
             "id",

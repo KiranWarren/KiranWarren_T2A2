@@ -9,7 +9,7 @@ class Country(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     # Columns
-    country = db.Column(db.String(25), unique=True, nullable=False)
+    country = db.Column(db.String(56), unique=True, nullable=False)
 
     # Relationships
     locations = db.relationship(

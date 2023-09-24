@@ -1,10 +1,34 @@
 from flask import Blueprint, jsonify, abort, request
+from marshmallow.exceptions import ValidationError
+from werkzeug.exceptions import BadRequest
+from sqlalchemy.exc import IntegrityError, DataError
 
 from main import db
 from models.projects import Project
 from schemas.project_schema import project_schema, projects_schema
 
 projects = Blueprint('project', __name__, url_prefix="/projects")
+
+# Error handlers
+@projects.errorhandler(BadRequest)
+def bad_request_error_handler(e):
+    return jsonify({"error": e.description}), 400
+
+@projects.errorhandler(ValidationError)
+def validation_error_handler(e):
+    return jsonify(e.messages), 400
+
+@projects.errorhandler(KeyError)
+def key_error_error_handler(e):
+    return jsonify({"error": f"The field `{e}` is required."}), 400
+
+@projects.errorhandler(IntegrityError)
+def integrity_error_handler(e):
+    return jsonify({"error": f"Integrity Error - `{e}`"}), 400
+
+@projects.errorhandler(DataError)
+def data_error_handler(e):
+    return jsonify({"error": f"Data Error - `{e}`"}), 400
 
 
 # CREATE a project
@@ -47,7 +71,7 @@ def update_project_by_id(project_id: int):
         db.session.commit()
         return jsonify(project_schema.dump(project))
 
-    return abort(404, description=f"A project with `id`={project_id} does not exist in the database. No updates have been made.")
+    return jsonify({"error": f"A project with `id`={project_id} does not exist in the database. No updates have been made."}), 404
 
 
 # GET all projects
@@ -76,7 +100,7 @@ def get_project_by_id(project_id: int):
     response = project_schema.dump(project)
 
     if not response:
-        return abort(404, description=f"A project with id=`{project_id}` does not exist in the database.")
+        return jsonify({"error": f"A project with id=`{project_id}` does not exist in the database."}), 404
 
     return jsonify(response)
 
@@ -92,7 +116,7 @@ def delete_project_by_id(project_id: int):
     response = project_schema.dump(project)
 
     if not response:
-        return abort(404, description=f"A project with `id`={project_id} does not exist in the database. No deletions have been made.")
+        return jsonify({"error": f"A project with `id`={project_id} does not exist in the database. No deletions have been made."}), 404
 
     db.session.delete(project)
     db.session.commit()

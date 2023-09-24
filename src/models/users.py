@@ -13,6 +13,7 @@ class User(db.Model):
     username = db.Column(db.String(25), unique=True, nullable=False)
     email_address = db.Column(EmailType, unique=True, nullable=False)
     position = db.Column(db.String(25), nullable=True)
+    password = db.Column(db.String(25), nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
     # Foreign Key Columns

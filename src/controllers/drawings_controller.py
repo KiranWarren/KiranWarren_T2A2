@@ -1,4 +1,7 @@
 from flask import Blueprint, jsonify, abort, request
+from marshmallow.exceptions import ValidationError
+from werkzeug.exceptions import BadRequest
+from sqlalchemy.exc import IntegrityError, DataError
 import datetime
 
 from main import db
@@ -6,6 +9,27 @@ from models.drawings import Drawing
 from schemas.drawing_schema import drawing_schema, drawings_schema
 
 drawings = Blueprint('drawing', __name__, url_prefix="/drawings")
+
+# Error handlers
+@drawings.errorhandler(BadRequest)
+def bad_request_error_handler(e):
+    return jsonify({"error": e.description}), 400
+
+@drawings.errorhandler(ValidationError)
+def validation_error_handler(e):
+    return jsonify(e.messages), 400
+
+@drawings.errorhandler(KeyError)
+def key_error_error_handler(e):
+    return jsonify({"error": f"The field `{e}` is required."}), 400
+
+@drawings.errorhandler(IntegrityError)
+def integrity_error_handler(e):
+    return jsonify({"error": f"Integrity Error - `{e}`"}), 400
+
+@drawings.errorhandler(DataError)
+def data_error_handler(e):
+    return jsonify({"error": f"Data Error - `{e}`"}), 400
 
 
 # CREATE a drawing
@@ -50,7 +74,7 @@ def update_drawing_by_id(drawing_id: int):
         db.session.commit()
         return jsonify(drawing_schema.dump(drawing))
 
-    return abort(404, description=f"A drawing with `id`={drawing_id} does not exist in the database. No updates have been made.")
+    return jsonify({"error": f"A drawing with `id`={drawing_id} does not exist in the database. No updates have been made."}), 404
 
 
 # GET all drawings
@@ -79,7 +103,7 @@ def get_drawing_by_id(drawing_id: int):
     response = drawing_schema.dump(drawing)
 
     if not response:
-        return abort(404, description=f"A drawing with id=`{drawing_id}` does not exist in the database.")
+        return jsonify({"error": f"A drawing with id=`{drawing_id}` does not exist in the database."}), 404
 
     return jsonify(response)
 
@@ -95,7 +119,7 @@ def delete_drawing_by_id(drawing_id: int):
     response = drawing_schema.dump(drawing)
 
     if not response:
-        return abort(404, description=f"A drawing with `id`={drawing_id} does not exist in the database. No deletions have been made.")
+        return jsonify({"error": f"A drawing with `id`={drawing_id} does not exist in the database. No deletions have been made."}), 404
 
     db.session.delete(drawing)
     db.session.commit()

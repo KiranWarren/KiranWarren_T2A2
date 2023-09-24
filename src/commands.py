@@ -1,7 +1,7 @@
-from main import db
 from flask import Blueprint
 import datetime
 
+from main import db
 from models import Country, Currency, LocationType, Location, User, Project, Drawing, Comment, Manufacture
 
 db_commands = Blueprint("db", __name__)
@@ -88,6 +88,7 @@ def seed_db():
         username = "ccosades",
         email_address = "ccosades@blades.com",
         position = "Grand Spymaster",
+        password = "blades4ever",
         is_admin = True,
         location_id = 1
     )
@@ -96,6 +97,7 @@ def seed_db():
         username = "tsadus",
         email_address = "tsadus@genmerch.com",
         position = "Merchant",
+        password = "justice4juib",
         is_admin = False,
         location_id = 2
     )
@@ -104,6 +106,7 @@ def seed_db():
         username = "ajira",
         email_address = "ajira@magesguild.com",
         position = "Associate",
+        password = "alchemist3",
         is_admin = False,
         location_id = 1
     )

@@ -5,14 +5,11 @@ from flask_marshmallow import Marshmallow
 db = SQLAlchemy()
 ma = Marshmallow()
 
-'''
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r ./requirements.txt
-'''
-
 
 def init_app():
+    '''
+    
+    '''
 
     app = Flask(__name__)
 

@@ -1,10 +1,34 @@
 from flask import Blueprint, jsonify, abort, request
+from marshmallow.exceptions import ValidationError
+from werkzeug.exceptions import BadRequest
+from sqlalchemy.exc import IntegrityError, DataError
 
 from main import db
 from models.locations import Location
 from schemas.location_schema import location_schema, locations_schema
 
 locations = Blueprint('location', __name__, url_prefix="/locations")
+
+# Error handlers
+@locations.errorhandler(BadRequest)
+def bad_request_error_handler(e):
+    return jsonify({"error": e.description}), 400
+
+@locations.errorhandler(ValidationError)
+def validation_error_handler(e):
+    return jsonify(e.messages), 400
+
+@locations.errorhandler(KeyError)
+def key_error_error_handler(e):
+    return jsonify({"error": f"The field `{e}` is required."}), 400
+
+@locations.errorhandler(IntegrityError)
+def integrity_error_handler(e):
+    return jsonify({"error": f"Integrity Error - `{e}`"}), 400
+
+@locations.errorhandler(DataError)
+def data_error_handler(e):
+    return jsonify({"error": f"Data Error - `{e}`"}), 400
 
 
 # CREATE a location
@@ -47,7 +71,7 @@ def update_location_by_id(location_id: int):
         db.session.commit()
         return jsonify(location_schema.dump(location))
 
-    return abort(404, description=f"A location with `id`={location_id} does not exist in the database. No updates have been made.")
+    return jsonify({"error": f"A location with `id`={location_id} does not exist in the database. No updates have been made."}), 404
 
 
 # GET all locations
@@ -76,7 +100,7 @@ def get_location_by_id(location_id: int):
     response = location_schema.dump(location)
 
     if not response:
-        return abort(404, description=f"A location with id=`{location_id}` does not exist in the database.")
+        return jsonify({"error": f"A location with id=`{location_id}` does not exist in the database."}), 404
 
     return jsonify(response)
 
@@ -92,7 +116,7 @@ def delete_location_by_id(location_id: int):
     response = location_schema.dump(location)
 
     if not response:
-        return abort(404, description=f"A location with `id`={location_id} does not exist in the database. No deletions have been made.")
+        return jsonify({"error": f"A location with `id`={location_id} does not exist in the database. No deletions have been made."}), 404
 
     db.session.delete(location)
     db.session.commit()
