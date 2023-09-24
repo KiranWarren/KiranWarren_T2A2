@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, abort, request
 from marshmallow.exceptions import ValidationError
 from werkzeug.exceptions import BadRequest
 from sqlalchemy.exc import IntegrityError, DataError
+from flask_jwt_extended import jwt_required
 import datetime
 
 from main import db
@@ -80,6 +81,7 @@ def update_comment_by_id(comment_id: int):
 # GET all comments
 # /comments/
 @comments.route("/", methods=["GET"])
+@jwt_required()
 def get_comments_list():
     '''
     

@@ -12,6 +12,16 @@ class BaseConfig(object):
 
         return db
     
+    @property
+    def JWT_SECRET_KEY(self):
+
+        jsk = os.environ.get("JWT_SECRET_KEY")
+
+        if jsk is None:
+            raise ValueError("Missing environment variable value for `JWT_SECRET_KEY`.")
+        
+        return jsk
+    
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
