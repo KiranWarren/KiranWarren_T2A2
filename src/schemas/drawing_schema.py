@@ -25,7 +25,7 @@ class DrawingSchema(ma.Schema):
 
         load_only = ["project_id"]
 
-    project = ma.Nested(ProjectSchema)
+    project = fields.Nested("ProjectSchema", only=("title","id"))
 
 drawing_schema = DrawingSchema()
 drawings_schema = DrawingSchema(many=True)

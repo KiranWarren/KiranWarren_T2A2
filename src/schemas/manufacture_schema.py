@@ -28,9 +28,9 @@ class ManufactureSchema(ma.Schema):
 
         load_only = ["project_id", "location_id", "currency_id"]
 
-    project = ma.Nested(ProjectSchema)
-    location = ma.Nested(LocationSchema)
-    currency = ma.Nested(CurrencySchema)
+    project = fields.Nested("ProjectSchema", only=("id","title"))
+    location = fields.Nested("LocationSchema", only=("name","country.country","admin_phone_number"))
+    currency = fields.Nested("CurrencySchema", only=("currency_abbr",))
 
 manufacture_schema = ManufactureSchema()
 manufactures_schema = ManufactureSchema(many=True)

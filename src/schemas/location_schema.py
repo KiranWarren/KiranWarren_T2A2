@@ -26,8 +26,8 @@ class LocationSchema(ma.Schema):
 
         load_only = ["country_id", "location_type_id"]
 
-    country = ma.Nested(CountrySchema)
-    location_type = ma.Nested(LocationTypeSchema)
+    country = fields.Nested("CountrySchema", only=("country",))
+    location_type = fields.Nested("LocationTypeSchema", only=("location_type",))
 
 location_schema = LocationSchema()
 locations_schema = LocationSchema(many=True)

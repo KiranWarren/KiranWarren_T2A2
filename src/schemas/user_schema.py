@@ -25,7 +25,7 @@ class UserSchema(ma.Schema):
 
         load_only = ["location_id", "password"]
 
-    location = ma.Nested(LocationSchema)
+    location = fields.Nested("LocationSchema", only=("name","country.country"))
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)

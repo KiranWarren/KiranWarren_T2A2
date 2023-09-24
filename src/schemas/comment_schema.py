@@ -26,8 +26,8 @@ class CommentSchema(ma.Schema):
 
         load_only = ["project_id", "user_id"]
 
-    project = ma.Nested(ProjectSchema)
-    user = ma.Nested(UserSchema)
+    project = fields.Nested("ProjectSchema", only=("title",))
+    user = fields.Nested("UserSchema", only=("username",))
 
 comment_schema = CommentSchema()
 comments_schema = CommentSchema(many=True)
