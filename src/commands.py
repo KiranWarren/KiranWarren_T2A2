@@ -1,7 +1,8 @@
 from main import db
 from flask import Blueprint
+import datetime
 
-from models import Country, Currency, LocationType, Location, User, Project
+from models import Country, Currency, LocationType, Location, User, Project, Drawing
 
 db_commands = Blueprint("db", __name__)
 
@@ -129,8 +130,68 @@ def seed_db():
         certification_number = "S0012344"
     )
 
-    # Seed Users
+    # Seed Projects
     db.session.add_all([proj1, proj2, proj3])
+    db.session.commit()
+
+    drw1 = Drawing(
+        drawing_number = "41756",
+        project_id = 1,
+        part_description = "pin",
+        version = 1,
+        last_modified = datetime.datetime.now()
+    )
+    drw2 = Drawing(
+        drawing_number = "41757",
+        project_id = 1,
+        part_description = "step asm",
+        version = 1,
+        last_modified = datetime.datetime.now()
+    )
+    drw3 = Drawing(
+        drawing_number = "41758",
+        project_id = 1,
+        part_description = "stringer",
+        version = 1,
+        last_modified = datetime.datetime.now()
+    )
+    drw4 = Drawing(
+        drawing_number = "39857",
+        project_id = 2,
+        part_description = "general assembly",
+        version = 4,
+        last_modified = datetime.datetime.now()
+    )
+    drw5 = Drawing(
+        drawing_number = "40987",
+        project_id = 2,
+        last_modified = datetime.datetime.now()
+    )
+    drw6 = Drawing(
+        drawing_number = "41999",
+        project_id = 2,
+        last_modified = datetime.datetime.now()
+    )
+    drw7 = Drawing(
+        drawing_number = "41087",
+        project_id = 2,
+        last_modified = datetime.datetime.now()
+    )
+    drw8 = Drawing(
+        drawing_number = "41088",
+        project_id = 2,
+        last_modified = datetime.datetime.now()
+    )
+    drw9 = Drawing(
+        drawing_number = "52321",
+        project_id = 3,
+        part_description = "tool",
+        version = 2,
+        last_modified = datetime.datetime.now()
+    )
+
+    # Seed Drawings
+    db.session.add_all([drw1, drw2, drw3, drw4, drw5, drw6, drw7, drw8, drw9])
     db.session.commit()
 
     print("Tables have been seeded.")
