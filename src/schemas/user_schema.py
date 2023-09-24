@@ -2,7 +2,6 @@ from marshmallow.validate import Length, And, Regexp
 from marshmallow import fields
 
 from main import ma
-from schemas.location_schema import LocationSchema
 
 class UserSchema(ma.Schema):
 
@@ -27,5 +26,15 @@ class UserSchema(ma.Schema):
 
     location = fields.Nested("LocationSchema", only=("name","country.country"))
 
+
+class LoginSchema(ma.Schema):
+    class Meta:
+        fields = (
+            "username",
+            "password"
+        )
+        
+
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
+login_schema = LoginSchema()

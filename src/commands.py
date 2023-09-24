@@ -1,9 +1,11 @@
 from flask import Blueprint
+from flask_bcrypt import Bcrypt
 import datetime
 
 from main import db
 from models import Country, Currency, LocationType, Location, User, Project, Drawing, Comment, Manufacture
 
+bcrypt = Bcrypt()
 db_commands = Blueprint("db", __name__)
 
 @db_commands.cli.command("create")
@@ -88,7 +90,7 @@ def seed_db():
         username = "ccosades",
         email_address = "ccosades@blades.com",
         position = "Grand Spymaster",
-        password = "blades4ever",
+        password = bcrypt.generate_password_hash("blades4ever").decode("utf-8"),
         is_admin = True,
         location_id = 1
     )
@@ -97,7 +99,7 @@ def seed_db():
         username = "tsadus",
         email_address = "tsadus@genmerch.com",
         position = "Merchant",
-        password = "justice4juib",
+        password = bcrypt.generate_password_hash("justice4juib").decode("utf-8"),
         is_admin = False,
         location_id = 2
     )
@@ -106,7 +108,7 @@ def seed_db():
         username = "ajira",
         email_address = "ajira@magesguild.com",
         position = "Associate",
-        password = "alchemist3",
+        password = bcrypt.generate_password_hash("alchemist4").decode("utf-8"),
         is_admin = False,
         location_id = 1
     )

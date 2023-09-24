@@ -1,9 +1,6 @@
 from marshmallow import fields
 
 from main import ma
-from schemas.project_schema import ProjectSchema
-from schemas.location_schema import LocationSchema
-from schemas.currency_schema import CurrencySchema
 
 class ManufactureSchema(ma.Schema):
 

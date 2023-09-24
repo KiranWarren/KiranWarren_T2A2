@@ -2,8 +2,6 @@ from marshmallow.validate import Length, And, Regexp
 from marshmallow import fields
 
 from main import ma
-from schemas.country_schema import CountrySchema
-from schemas.location_type_schema import LocationTypeSchema
 
 class LocationSchema(ma.Schema):
 
