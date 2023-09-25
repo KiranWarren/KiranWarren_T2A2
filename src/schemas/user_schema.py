@@ -9,6 +9,9 @@ class UserSchema(ma.Schema):
     email_address = fields.Email(required=True)
     password = fields.String(validate=Length(min=6, max=25))
     username = fields.String(validate=And(Length(min=2, max=25), Regexp('^[a-z0-9]+$')))
+    location_id = fields.Integer(required=True)
+    
+
 
     class Meta:
         fields = (

@@ -20,15 +20,15 @@ def validation_error_handler(e):
 
 @currencies.errorhandler(KeyError)
 def key_error_error_handler(e):
-    return jsonify({"error": f"The field `{e}` is required."}), 400
+    return jsonify({"key_error": f"The field `{e}` is required."}), 400
 
 @currencies.errorhandler(IntegrityError)
 def integrity_error_handler(e):
-    return jsonify({"error": f"Integrity Error - `{e}`"}), 400
+    return jsonify({"integrity_error": f"{e}"}), 400
 
 @currencies.errorhandler(DataError)
 def data_error_handler(e):
-    return jsonify({"error": f"Data Error - `{e}`"}), 400
+    return jsonify({"data_error": f"{e}"}), 400
 
 
 # CREATE a currency

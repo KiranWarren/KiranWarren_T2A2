@@ -7,7 +7,7 @@ from controllers.projects_controller import projects
 from controllers.drawings_controller import drawings
 from controllers.comments_controller import comments
 from controllers.manufactures_controller import manufactures
-from controllers.auth_controller import auths
+from controllers.auths_controller import auths
 
 register_controllers = (
     locations,
