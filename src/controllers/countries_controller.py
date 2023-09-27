@@ -143,13 +143,16 @@ def get_country_by_id(country_id: int):
 
     JWT is required for this route.
     '''
+    # Query the database to find the entry in the countries table with matching id=country_id.
     query = db.select(Country).filter_by(id=country_id)
     country = db.session.scalar(query)
     response = country_schema.dump(country)
 
+    # In the case that no entry is found with matching country_id, provide feedback to the user.
     if not response:
         return jsonify({"error": f"A country with id=`{country_id}` does not exist in the database."}), 404
 
+    # Return the requested country information.
     return jsonify(response)
 
 

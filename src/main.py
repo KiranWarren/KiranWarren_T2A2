@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+from flask_bcrypt import Bcrypt
 
 db = SQLAlchemy()
 ma = Marshmallow()
@@ -10,9 +10,6 @@ bcrypt = Bcrypt()
 
 
 def init_app():
-    '''
-    
-    '''
 
     app = Flask(__name__)
 
@@ -25,9 +22,6 @@ def init_app():
 
     # Connect Schemas
     ma.init_app(app)
-
-    # Connect JWT Manager
-    jwt.init_app(app)
 
     # CLI Commands
     from commands import db_commands

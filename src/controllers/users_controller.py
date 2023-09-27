@@ -5,14 +5,13 @@ from sqlalchemy.exc import IntegrityError, DataError
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_bcrypt import Bcrypt
 
-from main import db
+from main import db, bcrypt
 from models.users import User
 from models.comments import Comment
 from schemas.user_schema import user_schema, users_schema
 from schemas.comment_schema import comments_schema
 from controllers.auths_controller import check_admin
 
-bcrypt = Bcrypt()
 users = Blueprint('user', __name__, url_prefix="/users")
 
 # Error handlers
@@ -74,14 +73,19 @@ def update_user_information():
     response = user_schema.dump(user)
     
     # Validate input coming from json request using schema.
+    # Load-only fields need dummy data if not passed by the user.
     if request.json.get("email_address"):
         response["email_address"] = request.json["email_address"]
     if request.json.get("location_id"):
         response["location_id"] = request.json["location_id"]
+    else:
+        response["location_id"] = 1
     if request.json.get("position"):
         response["position"] = request.json["position"]
     if request.json.get("password"):
         response["password"] = request.json["password"]
+    else:
+        response["password"] = "password"
     response = user_schema.load(response)
 
     # Map the json request properties to the user if they are given.
@@ -89,16 +93,16 @@ def update_user_information():
     changed_string = ""
     if request.json.get("email_address"):
         user.email_address = request.json["email_address"]
-        changed_string = " email_address "
+        changed_string = " email_address"
     if request.json.get("location_id"):
         user.location_id = request.json["location_id"]
-        changed_string += " location_id "
+        changed_string += " location_id"
     if request.json.get("position"):
         user.position = request.json["position"]
-        changed_string += " position "
+        changed_string += " position"
     if request.json.get("password"):
         user.password = bcrypt.generate_password_hash(request.json["password"]).decode("utf-8")
-        changed_string += " password "
+        changed_string += " password"
 
     # Check if any information was changed. Give response if nothing was changed.
     if changed_string == "":
@@ -106,7 +110,7 @@ def update_user_information():
 
     # Commit changes and return changed information.
     db.session.commit()
-    return jsonify(message=f"The following user information has been changed: {changed_string}.", **user_schema.dump(user))
+    return jsonify(message=f"The following user information has been changed:{changed_string}.", **user_schema.dump(user))
 
 
 # GET all Users
