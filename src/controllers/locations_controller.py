@@ -149,7 +149,7 @@ def update_location_by_id(location_id: int):
 
     # Commit changes and return changed information.
     db.session.commit()
-    return jsonify(message=f"The following user information has been changed:{changed_string}.", **location_schema.dump(location))
+    return jsonify(message=f"The following location information has been changed:{changed_string}.", **location_schema.dump(location))
 
 
 # GET all locations
@@ -182,7 +182,7 @@ def get_location_by_id(location_id: int):
     This route is used to find a specific location based on the location id provided in the URL. The location id passed 
     in the URL must be an integer and must exist in the locations table.
 
-    The following data query will return the location with the matching location id passed in the URL.
+    The following database query will return the location with the matching location id passed in the URL.
     Database statement: SELECT * FROM locations WHERE id=location_id;
 
     JWT is required for this route.
