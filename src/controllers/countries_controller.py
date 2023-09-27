@@ -2,12 +2,12 @@ from flask import Blueprint, jsonify, abort, request
 from marshmallow.exceptions import ValidationError
 from werkzeug.exceptions import BadRequest
 from sqlalchemy.exc import IntegrityError, DataError
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import jwt_required
 
 from main import db
 from models.countries import Country
-from models.users import User
 from schemas.country_schema import country_schema, countries_schema
+from controllers.auths_controller import check_admin
 
 countries = Blueprint('country', __name__, url_prefix="/countries")
 
@@ -44,15 +44,15 @@ def create_country():
     The following statement will be used to create the entry in the countries data table.
     Database statement: INSERT INTO countries (country) VALUES (request.json["country"])
 
+    Example json body for POST request:
+    {
+        "country": "string between 4 and 56 chars"
+    }
+
     JWT and is_admin=True are required for this route.
     '''
-    # Get the identity of the user using this route & check is_admin=True.
-    username = get_jwt_identity()
-    query = db.select(User).filter_by(username=username)
-    user = db.session.scalar(query)
-    if not user:
-        return jsonify(message="Invalid user."), 401
-    if not user.is_admin:
+    # First call the check_admin function to check authorisation level.
+    if not check_admin():
         return jsonify(message="Admin-level authorisation required for this function."), 401
 
     # Extract the properties from the json request and create a new entry in countries table.
@@ -80,15 +80,15 @@ def update_country_by_id(country_id: int):
     The following statement will be used to filter the countries table to the specified entry based on id.
     Database statement: SELECT * FROM countries WHERE id=country_id;
 
+    Example json body for PUT request:
+    {
+        "country": "string between 4 and 56 chars"
+    }
+
     JWT and is_admin=True are required for this route.
     '''
-    # Get the identity of the user using this route & check is_admin=True.
-    username = get_jwt_identity()
-    query = db.select(User).filter_by(username=username)
-    user = db.session.scalar(query)
-    if not user:
-        return jsonify(message="Invalid user."), 401
-    if not user.is_admin:
+    # First call the check_admin function to check authorisation level.
+    if not check_admin():
         return jsonify(message="Admin-level authorisation required for this function."), 401
     
     # Query the database to find the matching entry in the countries table with id=country_id.
@@ -161,18 +161,16 @@ def delete_country_by_id(country_id: int):
     '''
     This route will be used to delete a country entry from the countries table based on the country id passed in the URL.
 
+    The "/delete_country/" portion was added to the URL to make it more deliberate and less prone to mistake. Deleting a
+    country would have significant flow-on effects to others tables and should be avoided.
+
     The following database query is used to select the country with the matching id=country_id.
     Database statement: SELECT * FROM countries WHERE id=country_id;
 
     JWT and is_admin=True are required for this route.
     '''
-    # Get the identity of the user using this route & check is_admin=True.
-    username = get_jwt_identity()
-    query = db.select(User).filter_by(username=username)
-    user = db.session.scalar(query)
-    if not user:
-        return jsonify(message="Invalid user."), 401
-    if not user.is_admin:
+    # First call the check_admin function to check authorisation level.
+    if not check_admin():
         return jsonify(message="Admin-level authorisation required for this function."), 401
     
     # Query the database to find the matching country entry.

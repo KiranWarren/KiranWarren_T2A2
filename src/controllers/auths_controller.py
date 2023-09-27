@@ -33,6 +33,23 @@ def data_error_handler(e):
     return jsonify({"data_error": f"{e}"}), 400
 
 
+def check_admin():
+    '''
+    This helper function is used throughout the application to check for is_admin=True before allowing use of admin-level
+    access routes.
+
+    The following database query will filter the users.username column to match the username given from the JWT identity.
+    Database statement: SELECT * FROM users WHERE username=get_jwt_identity();
+
+    For the matching user entry in the users table, the is_admin attribute will be returned (True/False).
+    '''
+    # Get the identity of the user using this route & check is_admin=True.
+    username = get_jwt_identity()
+    query = db.select(User).filter_by(username=username)
+    user = db.session.scalar(query)
+    return user.is_admin
+
+
 # Register a New User
 # /auth/register
 @auths.route("/register", methods=["POST"])
@@ -47,6 +64,15 @@ def register_user():
     Database statement: INSERT INTO users (username, email_address, position, location_id, is_admin, password)
     VALUES (user_json["username"], user_json["email_address"], user_json["position"], user_json["location_id"], 
     False, bcrypt.generate_password_hash(user_json["password"]).decode("utf-8"));
+
+    Example json body for POST request:
+    {
+        "username": "string between 2 and 25 chars",
+        "email_address": "valid email address",
+        "position": "OPTIONAL, string",
+        "password": "string between 6 and 25 chars",
+        "location_id": "integer"
+    }
 
     No authentication or authorisation is required for this route. Ideally, there would be some verification that the user
     registering for this route is an employee at the company, however, this falls out of the scope of this assignment.
@@ -88,6 +114,12 @@ def login_user():
     The following database query will return the user with the matching username passed in the json request.
     Database statement: SELECT * FROM users WHERE username=request.json["username"];
 
+    Example json body for POST request:
+    {
+        "username": "string between 2 and 25 chars",
+        "password": "string between 6 and 25 chars"
+    }
+
     This route performs authentication, so no prior authentication is required for this route.
     '''
     login_json = login_schema.load(request.json)
@@ -111,22 +143,25 @@ def login_user():
 @jwt_required()
 def promote_user_to_admin():
     '''
-    This route will be used by an admin to increase the level of authorisation to admin level for another user.
+    This route will be used by an admin to increase the level of authorisation to admin level for another user. If the
+    user already has admin-level access, no changes will be made and response detailling this will be returned. The user's
+    username will be sent via json body in the request. This design choice was made because it feels more deliberate and
+    less prone to error than sending a users.id via URL.
 
-    A patch request seems most appropriate here, as only one field is being updated for the user entry.
+    A PATCH request seems most appropriate here, as only one field is being updated for the user entry.
 
     The following database query will filter the users.username column to match the username given from the request json.
     Database statement: SELECT * FROM users WHERE username='request.json["username"]';
 
+    Example json body for PATCH request:
+    {
+        "username": "string between 2 and 25 chars"
+    }
+
     JWT and is_admin=True are required for this route.
     '''
-    # Get the identity of the user using this route & check is_admin=True.
-    username = get_jwt_identity()
-    query = db.select(User).filter_by(username=username)
-    user = db.session.scalar(query)
-    if not user:
-        return jsonify(message="Invalid user."), 401
-    if not user.is_admin:
+    # First call the check_admin function to check authorisation level.
+    if not check_admin():
         return jsonify(message="Admin-level authorisation required for this function."), 401
 
     # Extract username from json request and filter users.username

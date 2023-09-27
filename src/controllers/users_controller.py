@@ -10,6 +10,7 @@ from models.users import User
 from models.comments import Comment
 from schemas.user_schema import user_schema, users_schema
 from schemas.comment_schema import comments_schema
+from controllers.auths_controller import check_admin
 
 bcrypt = Bcrypt()
 users = Blueprint('user', __name__, url_prefix="/users")
@@ -55,6 +56,14 @@ def update_user_information():
 
     The following database query will filter the users.username column to match the username given from the jwt identity.
     Database statement: SELECT * FROM users WHERE username=get_jwt_identity();
+
+    Example json body for PATCH request:
+    {
+        "email_address": "OPTIONAL, valid email address",
+        "position": "OPTIONAL, string",
+        "password": "OPTIONAL, string between 6 and 25 chars",
+        "location_id": "OPTIONAL, integer"
+    }
 
     JWT is required for this route.
     '''
@@ -154,18 +163,16 @@ def delete_user_by_id(user_id: int):
     This route is used by an admin to remove a user from the users table. The user to be removed will have a matching id to
     the user_id passed in the URL. The user id passed in the URL must be an integer and must exist in the users table.
 
+    The "/delete_user/" portion of the URL was added to make sure that this action was deliberate and less prone to mistake.
+    Accidentally deleting a user would have flow on effects to comments due to the cascade delete.
+
     The following data query will return the user with the matching user id passed in the URL.
     Database statement: SELECT * FROM users WHERE id=user_id;
 
     JWT and is_admin=True are required for this route.
     '''
-    # Get the identity of the user using this route & check is_admin=True.
-    username = get_jwt_identity()
-    query = db.select(User).filter_by(username=username)
-    user = db.session.scalar(query)
-    if not user:
-        return jsonify(message="Invalid user."), 401
-    if not user.is_admin:
+    # First call the check_admin function to check authorisation level.
+    if not check_admin():
         return jsonify(message="Admin-level authorisation required for this function."), 401
 
     # Filter the user with the matching user_id.
