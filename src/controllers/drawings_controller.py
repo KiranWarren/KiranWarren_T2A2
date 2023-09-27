@@ -2,11 +2,13 @@ from flask import Blueprint, jsonify, abort, request
 from marshmallow.exceptions import ValidationError
 from werkzeug.exceptions import BadRequest
 from sqlalchemy.exc import IntegrityError, DataError
+from flask_jwt_extended import jwt_required
 import datetime
 
 from main import db
 from models.drawings import Drawing
 from schemas.drawing_schema import drawing_schema, drawings_schema
+from controllers.auths_controller import check_admin
 
 drawings = Blueprint('drawing', __name__, url_prefix="/drawings")
 
@@ -37,15 +39,38 @@ def data_error_handler(e):
 @drawings.route("/", methods=["POST"])
 def create_drawing():
     '''
-    
+    This route is used to create a drawing entry in the drawings table. The drawing needs to be associated to a particular
+    project.
+
+    The following statement will be used to create the entry in the drawings data table.
+    Database statement: INSERT INTO drawings (drawing_number, part_description, version, last_modified, project_id) 
+    VALUES (request.json["drawing_number"], request.json["part_description"], request.json["version"], 
+    datetime.datetime.now(), request.json["project_id"]);
+
+    Example json body for POST request:
+    {
+        "drawing_number": "string, length from 3 to 10 chars",
+        "part_description": "OPTIONAL, string",
+        "version": "OPTIONAL, integer",
+        "project_id": "integer"
+    }
+
+    JWT and is_admin=True are required for this route.
     '''
+    # First call the check_admin function to check authorisation level.
+    if not check_admin():
+        return jsonify(message="Admin-level authorisation required for this function."), 401
+    
+    # Extract the properties from the json body and map to a new entry. 
     drawing_json = drawing_schema.load(request.json)
     drawing_json["last_modified"] = datetime.datetime.now()
     new_drawing = Drawing(**drawing_json)
 
+    # Insert the new entry into the drawings table
     db.session.add(new_drawing)
     db.session.commit()
 
+    # Return the new drawing entry to the user upon successful insertion
     return jsonify(drawing_schema.dump(new_drawing))
 
 
