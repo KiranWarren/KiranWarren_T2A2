@@ -8,7 +8,6 @@ class CommentSchema(ma.Schema):
     # Validation
     comment = fields.String(required=True, validate=Length(min=1))
     project_id = fields.Integer(required=True)
-    user_id = fields.Integer(required=True)
 
     class Meta:
         fields = (
