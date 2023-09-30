@@ -10,9 +10,9 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     # Columns
-    username = db.Column(db.String(25), unique=True, nullable=False)
+    username = db.Column(db.String(40), unique=True, nullable=False)
     email_address = db.Column(EmailType, unique=True, nullable=False)
-    position = db.Column(db.String(25), nullable=True)
+    position = db.Column(db.String(40), nullable=True)
     password = db.Column(db.String, nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
 

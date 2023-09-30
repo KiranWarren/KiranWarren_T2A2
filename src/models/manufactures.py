@@ -11,7 +11,6 @@ class Manufacture(db.Model):
 
     # Columns
     price_estimate = db.Column(db.Float, nullable=False)
-    id = db.Column(db.String, unique=True)
 
     # Foreign Key Columns
     currency_id = db.Column(db.Integer, db.ForeignKey("currencies.id"), nullable=False)

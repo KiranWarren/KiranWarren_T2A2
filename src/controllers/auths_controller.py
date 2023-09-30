@@ -67,10 +67,10 @@ def register_user():
 
     Example json body for POST request:
     {
-        "username": "string between 2 and 25 chars",
+        "username": "string between 2 and 40 chars",
         "email_address": "valid email address",
-        "position": "OPTIONAL, string",
-        "password": "string between 6 and 25 chars",
+        "position": "OPTIONAL, string up to 40 chars",
+        "password": "string between 6 and 50 chars",
         "location_id": "integer"
     }
 
@@ -95,7 +95,7 @@ def register_user():
     db.session.commit()
 
     # Create an access token that expires in 1 day
-    expiry = timedelta(days=1)
+    expiry = timedelta(days=7)
     access_token = create_access_token(identity=user_json["username"], expires_delta=expiry)
 
     return jsonify(message=f"User {new_user.username} has been registered successfully.", user=user_json["username"], access_token=access_token)
@@ -116,8 +116,8 @@ def login_user():
 
     Example json body for POST request:
     {
-        "username": "string between 2 and 25 chars",
-        "password": "string between 6 and 25 chars"
+        "username": "string between 2 and 40 chars",
+        "password": "string between 6 and 50 chars"
     }
 
     This route performs authentication, so no prior authentication is required for this route.
@@ -131,7 +131,7 @@ def login_user():
         return jsonify({"error": "The username or password you have entered is incorrect. Please try again."}), 401
     
     # Create an access token that expires in 1 day
-    expiry = timedelta(days=1)
+    expiry = timedelta(days=7)
     access_token = create_access_token(identity=login_json["username"], expires_delta=expiry)
 
     return jsonify(message=f"Login successful. Welcome back, {login_json['username']}.", user=login_json["username"], access_token=access_token)
@@ -155,7 +155,7 @@ def promote_user_to_admin():
 
     Example json body for PATCH request:
     {
-        "username": "string between 2 and 25 chars"
+        "username": "string between 2 and 40 chars"
     }
 
     JWT and is_admin=True are required for this route.

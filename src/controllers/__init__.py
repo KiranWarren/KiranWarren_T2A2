@@ -8,6 +8,7 @@ from controllers.drawings_controller import drawings
 from controllers.comments_controller import comments
 from controllers.manufactures_controller import manufactures
 from controllers.auths_controller import auths
+from controllers.homepage_controller import homepage
 
 register_controllers = (
     locations,
@@ -19,5 +20,6 @@ register_controllers = (
     drawings,
     comments,
     manufactures,
-    auths
+    auths,
+    homepage
     )

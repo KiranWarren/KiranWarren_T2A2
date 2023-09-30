@@ -146,6 +146,9 @@ def update_drawing_by_id(drawing_id: int):
     # Check if any information was changed. Give response if nothing was changed.
     if changed_string == "":
         return jsonify(message="No drawing information has been changed.") 
+    
+    # Update the last_modified date after it is confirmed that changes have been made.
+    drawing.last_modified = datetime.datetime.now()
 
     # Commit changes and return changed information.
     db.session.commit()
