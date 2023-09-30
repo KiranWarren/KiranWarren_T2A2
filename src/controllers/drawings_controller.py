@@ -37,6 +37,7 @@ def data_error_handler(e):
 # CREATE a drawing
 # /drawings/
 @drawings.route("/", methods=["POST"])
+@jwt_required()
 def create_drawing():
     '''
     This route is used to create a drawing entry in the drawings table. The drawing needs to be associated to a particular
@@ -121,6 +122,7 @@ def update_drawing_by_id(drawing_id: int):
         response["part_description"] = request.json["part_description"]
     if request.json.get("version"):
         response["version"] = request.json["version"]
+    else: response["version"] = 1
     if request.json.get("project_id"):
         response["project_id"] = request.json["project_id"]
     else:

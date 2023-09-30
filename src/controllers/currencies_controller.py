@@ -139,7 +139,7 @@ def get_currencies_list():
 # GET a currency by id
 # /currencies/<id>
 @currencies.route("/<int:currency_id>", methods=["GET"])
-@jwt_required
+@jwt_required()
 def get_currency_by_id(currency_id: int):
     '''
     This route is used to get a specific entry from the currencies table by providing the currency_id in the URL.

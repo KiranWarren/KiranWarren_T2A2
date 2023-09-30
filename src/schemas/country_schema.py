@@ -6,7 +6,7 @@ from main import ma
 class CountrySchema(ma.Schema):
 
     # Validation
-    country = fields.String(required=True, validate=Length(min=4, max=56))
+    country = fields.String(required=True, validate=Length(min=2, max=56))
 
     class Meta:
         fields = (

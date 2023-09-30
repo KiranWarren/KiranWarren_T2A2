@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, abort, request
+from flask import Blueprint, jsonify, request
 from marshmallow.exceptions import ValidationError
 from werkzeug.exceptions import BadRequest
 from sqlalchemy.exc import IntegrityError, DataError

@@ -176,7 +176,7 @@ def get_projects_list():
 # GET a project by id
 # /projects/<id>
 @projects.route("/<int:project_id>", methods=["GET"])
-@jwt_required
+@jwt_required()
 def get_project_by_id(project_id: int):
     '''
     This route is used to find a specific project based on the project_id pass in the URL. The id passed in the URL must be

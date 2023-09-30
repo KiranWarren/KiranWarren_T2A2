@@ -8,7 +8,6 @@ db = SQLAlchemy()
 ma = Marshmallow()
 bcrypt = Bcrypt()
 
-
 def init_app():
 
     app = Flask(__name__)

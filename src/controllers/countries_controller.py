@@ -46,7 +46,7 @@ def create_country():
 
     Example json body for POST request:
     {
-        "country": "string between 4 and 56 chars"
+        "country": "string between 2 and 56 chars"
     }
 
     JWT and is_admin=True are required for this route.
@@ -82,7 +82,7 @@ def update_country_by_id(country_id: int):
 
     Example json body for PUT request:
     {
-        "country": "string between 4 and 56 chars"
+        "country": "string between 2 and 56 chars"
     }
 
     JWT and is_admin=True are required for this route.

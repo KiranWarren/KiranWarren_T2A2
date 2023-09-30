@@ -189,6 +189,7 @@ def get_comments_list():
 # GET a comment by id
 # /comments/<id>
 @comments.route("/<int:comment_id>", methods=["GET"])
+@jwt_required()
 def get_comment_by_id(comment_id: int):
     '''
     This route will be used to retrieve details of a comment by providing the id of the comment in the URL. The id

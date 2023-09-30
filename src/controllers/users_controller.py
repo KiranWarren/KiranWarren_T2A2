@@ -3,7 +3,6 @@ from marshmallow.exceptions import ValidationError
 from werkzeug.exceptions import BadRequest
 from sqlalchemy.exc import IntegrityError, DataError
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask_bcrypt import Bcrypt
 
 from main import db, bcrypt
 from models.users import User
