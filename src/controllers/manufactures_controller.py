@@ -71,7 +71,7 @@ def create_manufacture():
     db.session.commit()
 
     # Upon successful insertion, provide feedback to the user by displaying the new entry.
-    return jsonify(manufacture_schema.dump(new_manufacture))
+    return jsonify(manufacture_schema.dump(new_manufacture)), 201
 
 
 # UPDATE a manufacture by ids

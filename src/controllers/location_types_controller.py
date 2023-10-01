@@ -64,7 +64,7 @@ def create_location_type():
     db.session.commit()
 
     # Return the new entry for confirmation.
-    return jsonify(location_type_schema.dump(new_location_type))
+    return jsonify(location_type_schema.dump(new_location_type)), 201
 
 
 # UPDATE a location type by id

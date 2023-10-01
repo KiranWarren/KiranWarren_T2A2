@@ -82,7 +82,7 @@ def post_comment():
     db.session.commit()
 
     # Upon successful comment post, return the comment to the user.
-    return jsonify(comment_schema.dump(new_comment))
+    return jsonify(comment_schema.dump(new_comment)), 201
 
 
 # EDIT a comment by id
@@ -105,7 +105,7 @@ def update_comment_by_id(comment_id: int):
     The comment being modified must also be found in the database, to firstly retrieve the user_id then to modify.
     Database statement: SELECT * FROM comments where id=comment_id;
 
-    Example json body for POST request:
+    Example json body for PATCH request:
     {
         "comment": "string",
         "project_id": "integer"
@@ -128,7 +128,7 @@ def update_comment_by_id(comment_id: int):
 
     # Ensure that the user is either an admin or the owner of the comment.
     if not comment.user_id == user.id and not user.is_admin:
-        return jsonify(error="You can only modify comments that you have made.")
+        return jsonify(error="You can only modify comments that you have made."), 401
 
     # Validate input coming from json request using schema.
     # Load-only fields need dummy data if not passed by the user.
@@ -250,7 +250,7 @@ def delete_comment_by_id(comment_id: int):
 
     # Ensure that the user is either an admin or the owner of the comment.
     if not comment.user_id == user.id and not user.is_admin:
-        return jsonify(error="You can only delete comments that you have made.")
+        return jsonify(error="You can only delete comments that you have made."), 401
     
     # Delete the entry and commit changes.
     db.session.delete(comment)

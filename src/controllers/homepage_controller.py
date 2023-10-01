@@ -64,8 +64,8 @@ def get_homepage():
         "47_Get_Location_Type_by_ID": "/location-types/<id>",
         "48_Delete_Location_Type_by_ID (admin)": "/location-types/delete_loc_type/<id>",
         "49_Create_Currency (admin)": "/currencies",
-        "40_Update_Currency_by_ID (admin)": "/currencies/<id>",
-        "41_Get_All_Currencies": "/currencies",
-        "42_Get_Currency_by_ID": "/currencies/<id>",
-        "43_Delete_Currency_by_ID (admin)": "/currencies/delete_currency/<id>"
+        "50_Update_Currency_by_ID (admin)": "/currencies/<id>",
+        "51_Get_All_Currencies": "/currencies",
+        "52_Get_Currency_by_ID": "/currencies/<id>",
+        "53_Delete_Currency_by_ID (admin)": "/currencies/delete_currency/<id>"
     })

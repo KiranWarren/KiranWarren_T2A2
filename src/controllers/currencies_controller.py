@@ -64,7 +64,7 @@ def create_currency():
     db.session.commit()
 
     # Display the new entry for a successful insert
-    return jsonify(currency_schema.dump(new_currency))
+    return jsonify(currency_schema.dump(new_currency)), 201
 
 
 # UPDATE a currency by id

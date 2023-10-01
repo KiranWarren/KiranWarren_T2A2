@@ -76,7 +76,7 @@ def create_project():
     db.session.commit()
 
     # Return the details of the new project for a successful insert.
-    return jsonify(project_schema.dump(new_project))
+    return jsonify(project_schema.dump(new_project)), 201
 
 
 # UPDATE a project by id
@@ -201,8 +201,8 @@ def get_project_by_id(project_id: int):
 
 
 # DELETE a project by id
-# /projects/<id>
-@projects.route("/<int:project_id>", methods=["DELETE"])
+# /projects/delete_project/<id>
+@projects.route("/delete_project/<int:project_id>", methods=["DELETE"])
 @jwt_required()
 def delete_project_by_id(project_id: int):
     '''

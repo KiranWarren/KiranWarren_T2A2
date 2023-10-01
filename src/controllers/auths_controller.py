@@ -98,7 +98,7 @@ def register_user():
     expiry = timedelta(days=7)
     access_token = create_access_token(identity=user_json["username"], expires_delta=expiry)
 
-    return jsonify(message=f"User {new_user.username} has been registered successfully.", user=user_json["username"], access_token=access_token)
+    return jsonify(message=f"User {new_user.username} has been registered successfully.", user=user_json["username"], access_token=access_token), 201
 
 
 # Login User
@@ -134,7 +134,7 @@ def login_user():
     expiry = timedelta(days=7)
     access_token = create_access_token(identity=login_json["username"], expires_delta=expiry)
 
-    return jsonify(message=f"Login successful. Welcome back, {login_json['username']}.", user=login_json["username"], access_token=access_token)
+    return jsonify(message=f"Login successful. Welcome back, {login_json['username']}.", user=login_json["username"], access_token=access_token), 201
 
 
 # Promote User to Admin-Level Authorisation

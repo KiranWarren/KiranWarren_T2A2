@@ -72,7 +72,7 @@ def create_drawing():
     db.session.commit()
 
     # Return the new drawing entry to the user upon successful insertion
-    return jsonify(drawing_schema.dump(new_drawing))
+    return jsonify(drawing_schema.dump(new_drawing)), 201
 
 
 # UPDATE a drawing by id

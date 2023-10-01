@@ -71,7 +71,7 @@ def create_location():
     db.session.commit()
 
     # Return the new entry as confirmation.
-    return jsonify(location_schema.dump(new_location))
+    return jsonify(location_schema.dump(new_location)), 201
 
 
 # UPDATE a location by id
