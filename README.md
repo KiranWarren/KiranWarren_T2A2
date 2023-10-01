@@ -2,7 +2,7 @@
 
 ### Kiran Warren
 
-## Fabrication Projects Catalogue API
+## Fabrication Project Catalogue API
 
 ## Contents
 
@@ -11,8 +11,9 @@
   - [1.2 ORM Chosen - SQLAlchemy](README.md#12-orm-chosen---sqlalchemy-r4)
 - [2 Database Design](README.md#2-database-design)
   - [2.1 Entity Relation Diagram](README.md#21-entity-relation-diagram-r6)
-  - [2.2 Entities and their Attributes](README.md#22-entities-and-their-attributes)
-  - [2.3 Entity Relationships](README.md#23-entity-relationships-r8)
+  - [2.2 Data Tables](README.md#22-data-tables)
+  - [2.3 Relationships](README.md#23-relationships-r8)
+  - [2.4 Flask Relationships](./README.md#24-flask-relationships-r9)
 - [3 Application Design](README.md#3-application-design)
   - [3.1 API Endpoints](README.md#31-api-endpoints-r5)
     - [3.1.1 Homepage](/README.md#311-homepage)
@@ -28,6 +29,8 @@
     - [3.1.11 Currencies](/README.md#3111-currencies)
   - [3.2 Third-Party Sevices](README.md#32-third-party-services-r7)
 - [4 Project Management](README.md#4-project-management)
+  - [4.1 Git Repository](./README.md#41-git-repository)
+  - [4.2 Project Management Tool](./README.md#42-project-management-tool-r10)
 
 ## 1 Project Description (R1, R2)
 
@@ -130,7 +133,7 @@ The database will have the following 9 data tables outlined below. If a primary 
 - <b>Currencies</b> - List of all currency abbreviations references in the manufactures table. A single attribute is recorded in this table:
   - currency_abbr: A three letter currency abbreviation, e.g., AUD, USD, IDR, CAD, etc.
 
-### 2.3 Relationships (R9)
+### 2.3 Relationships (R8)
 
 There are a total of 9 relationships between tables in the database. These have been described in finer detail below.
 
@@ -168,6 +171,38 @@ There are a total of 9 relationships between tables in the database. These have 
   There is a one-to-many relationship between currencies and manufacturing offerings. A location will offer to manufacture a project at a listed price of a single currency. Many manufacturing offerings can be listed with the same currency.
 
 ![Currencies-Manufactures](./docs/manufactures-currencies.png)
+
+### 2.4 Flask Relationships (R9)
+
+The following relationships need to be created between models in the Flask application. These will be arranged by model:
+
+- Comments
+  - Project: back populates comments. Changes in comments do not affect projects.
+  - User: back populates comments. Changes in comments do not affect users.
+- Countries
+  - Location: back populates country. Any changes in countries flows through to locations. Deleting a country then deletes all locations using that foreign key.
+- Currencies
+  - Manufacture: back populates currency. Any changes in currencies flows through to manufactures. Deleting a currency then deletes all manufactures using that foreign key.
+- Drawings
+  - Project: back populates drawings. Changes in drawings do not affect projects.
+- LocationTypes
+  - Location: back populates location_type. Any changes in location types flows through to locations. Deleting a location type then deletes all locations using that foreign key.
+- Locations
+  - Country: back populates locations. Changes in locations do not affect countries.
+  - LocationType: back populates locations. Changes in locations do not affect location types.
+  - User: back populates location. Any changes in locations flow through to users. Deleting a location will then delete all users using that foreign key.
+  - Manufacture: back populates location. Any changes in locations flows through to manufactures. Deleting a location will then deletes all manufactures using that foreign key.
+- Manufactures
+  - Project: back populates manufactures. Changes in manufactures do not affect projects.
+  - Location: back populates manufactures. Changes in manufactures do not affect locations.
+  - Currency: back populates manufactures. Changes in manufactures do not affect currencies.
+- Projects
+  - Drawing: back populates project. Any changes in projects flows through to drawings. Deleting a project then deletes all drawings using that foreign key.
+  - Comment: back populates project. Any changes in projects flows through to comments. Deleting a project then deletes all comments using that foreign key.
+  - Manufacture: back populates project. Any changes in projects flows through to manufactures. Deleting a project then deletes all manufactures using that foreign key.
+- Users
+  - Location: back populates users. Changes in users do not affect locations.
+  - Comment: back populates user. Any changes in users flows through to comments. Deleting a user then deletes all comments made by that user (using that foreign key).
 
 ## 3 Application Design
 
@@ -927,4 +962,37 @@ Responses:
 
 ### 3.2 Third-Party Services (R7)
 
+There are multiple third party services required to run this flask application. These are stored in the requirements.txt text file, and can be easily installed using the following bash shell command:
+
+> pip install -r requirements.txt
+
+The third party services required include:
+
+- PostgreSQL (version 15.3 used) - database management system used in conjunction with this application. All data stored from the application will be held in a PostgreSQL database.
+- Flask (version 2.3.3 used) - web framework written in Python, typically used for web applications and APIs.
+- Flask-Bcrypt (version 4.0.1 used) - an extension for Flask that provides some hashing utilities. It is used in this project to hash user passwords so that they are stored in an encrypted format.
+- Flask-JWT-Extended (version 4.5.2 used) - an extension for Flask that provides authentication utilities by way of JSON web tokens (JWT). To use most features of this application, users are required to pass a valid JWT as a bearer token in the request header. This extension makes it very easy to apply web token authentication to routes, generate JWTs at user login and get the JWT passed by a user to get the user's identity.
+- Flask-SQLAlchemy (version 3.1.1 used) - an extension for Flask that adds support for SQLAlchemy, an object-relational mapper. SQLAlchemy is described further is section 1.2.
+- Flask-Marshmallow (version 0.15.0 used) - an extension for Flask that adds support for Marshmallow. Marshmallow provides tools for creating schemas to serialise and de-serialise objects. Marshmallow also provides utilities to allow for more graceful validation of data before it is fed to the database.
+- Marshmallow-SQLAlchemy (version 0.29.0 used) - an extension for Marshmallow that provides support for SQLAlchemy. This extension makes it easier to serialise and de-serialise SQLAlchemy objects using Marshmallow schemas.
+- Psycopg2 (version 2.9.7 used) - an adapter between Python and PostgreSQL. It allows Python applications to interact with PostgreSQL databases using SQL.
+- Python Dotenv (version 1.0.0 used) - a Python library that allows the use of a .env file to hold environment variables outside of the main application. Without this, environment variables would need to be hard-coded into the application itself.
+- SQLAlchemy-Utils (version 0.41.1 used) - a library that provides some utilities for SQLAlchemy. In this application, it is used to provide an additional data type (EmailType).
+
 ## 4 Project Management
+
+### 4.1 Git Repository
+
+This project was regularly pushed to the following GitHub repository:
+
+> github.com/KiranWarren/KiranWarren_T2A2
+
+### 4.2 Project Management Tool (R10)
+
+This development of this project was organised by using a Trello board. Development phases were broken up into lists, and individual cards were created for specific tasks. This made it easier to flesh out ideas and conceptualise the order in which tasks needed to be completed due to dependencies.
+
+The estimated amount of time required to finish each task was applied to each card using labels. The labels also provided a way to track which tasks were completed and which tasks required rework.
+
+The Trello board can be found at the following location:
+
+> trello.com/b/Sun4TZuW/kiranwarrent2a2
